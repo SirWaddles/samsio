@@ -1,0 +1,29 @@
+{
+  "name": "samsio",
+  "version": "0.0.1",
+  "description": "A super simple no frills state management library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SirWaddles/samsio.git"
+  },
+  "keywords": [
+    "state",
+    "flux",
+    "react",
+    "management",
+    "container"
+  ],
+  "author": "Waddles",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SirWaddles/samsio/issues"
+  },
+  "homepage": "https://github.com/SirWaddles/samsio#readme",
+  "dependencies": {
+    "react": "^15.6.1"
+  }
+}
