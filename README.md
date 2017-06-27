@@ -72,8 +72,12 @@ import UserStore from './UserStore';
 function AddNewUser(user) {
     UserStore.updateState({
         users: UserStore.getState().users.concat([user])
-    })
+    });
 }
 
 export {AddNewUser};
 ```
+
+React is a great library, and it's conventions and architectures have become ubiquitous for good reason. The state management area however is complex, overcrowded and nonsensical. I've tried many solutions and none of them seem to merge the usecase for large scale, elegant implementation and short boilerplate with easy-to-start interface and a smooth learning curve.
+
+I've created this for myself to use in the interim until something becomes more standard, it simply cannot do many of the things that the alternatives systems can, but they all seem to do those things at the expense of the developer when it's not going to be useful 95% of the time.
