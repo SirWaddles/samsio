@@ -22,6 +22,10 @@ class Store {
 
     updateState(obj) {
         Object.assign(this.state, obj);
+        this.flush();
+    }
+
+    flush() {
         for (var key in this.listeners) {
             this.listeners[key](this.state);
         }
