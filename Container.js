@@ -31,7 +31,7 @@ class StoreContainer extends React.Component {
 
     componentWillUnmount() {
         if (Array.isArray(this.props.store)) {
-            this.props.listenid.forEach(v => v.store.removeListener(v.listen));
+            this.listenid.forEach(v => v.store.removeListener(v.listen));
         } else {
             this.props.store.removeListener(this.listenid);
         }
