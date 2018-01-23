@@ -3,7 +3,11 @@ import React from 'react';
 class StoreContainer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = props.store.getState();
+        if (Array.isArray(props.store)) {
+            this.state = props.store.reduce((acc, v) => Object.assign(acc, v.getState()), {});
+        } else {
+            this.state = props.store.getState();
+        }
     }
 
     render() {
@@ -15,11 +19,22 @@ class StoreContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.listenid = this.props.store.addListener((state) => this.setState(state));
+        if (Array.isArray(this.props.store)) {
+            this.listenid = this.props.store.map(v => ({
+                listen: v.addListener(state => this.setState(state)),
+                store: v,
+            });
+        } else {
+            this.listenid = this.props.store.addListener((state) => this.setState(state));
+        }
     }
 
     componentWillUnmount() {
-        this.props.store.removeListener(this.listenid);
+        if (Array.isArray(this.props.store)) {
+            this.props.store.forEach(v => v.store.removeListener(v.listen));
+        } else {
+            this.props.store.removeListener(this.listenid);
+        }
     }
 }
 
