@@ -23,7 +23,7 @@ class StoreContainer extends React.Component {
             this.listenid = this.props.store.map(v => ({
                 listen: v.addListener(state => this.setState(state)),
                 store: v,
-            });
+            }));
         } else {
             this.listenid = this.props.store.addListener((state) => this.setState(state));
         }
