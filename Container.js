@@ -11,6 +11,7 @@ class StoreContainer extends React.Component {
         } else {
             this.state = Object.keys(props.store).reduce((acc, v) => {
                 acc[v] = props.store[v].getState();
+                return acc;
             }, {});
         }
     }
