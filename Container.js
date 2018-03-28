@@ -18,9 +18,13 @@ class StoreContainer extends React.Component {
 
     render() {
         var children = this.props.children;
-        if (!Array.isArray(children)) return React.cloneElement(children, this.state);
+        var state = this.state;
+        if (this.props.hasOwnProperty('transform')) {
+            state = this.props.transform(state);
+        }
+        if (!Array.isArray(children)) return React.cloneElement(children, state);
         return children.map((child, i) => {
-            return React.cloneElement(child, Object.assign({key: i}, this.state));
+            return React.cloneElement(child, Object.assign({key: i}, state));
         });
     }
 
