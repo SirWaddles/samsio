@@ -1,9 +1,24 @@
 var gblListenID = 1;
+var gblProcessID = 1;
 
 class Store {
     constructor() {
+        this.processors = [];
         this.listeners = {};
         this.state = {};
+    }
+
+    addProcessor(processor) {
+        gblProcessID++;
+        this.processors.push({
+            process: processor,
+            id: gblProcessID,
+        });
+        return gblProcessID;
+    }
+
+    removeProcessor(processId) {
+        this.processors = this.processors.filter(v => v.id !== processId);
     }
 
     addListener(listener) {
@@ -22,6 +37,7 @@ class Store {
 
     updateState(obj) {
         Object.assign(this.state, obj);
+        this.state = this.processors.reduce((acc, v) => v.process(acc), this.state);
         this.flush();
     }
 
