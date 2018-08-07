@@ -1,6 +1,6 @@
 {
   "name": "samsio",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A super simple no frills state management library",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/SirWaddles/samsio#readme",
   "dependencies": {
-    "react": "^16.2.0"
+    "react": "^16.4.2"
   }
 }

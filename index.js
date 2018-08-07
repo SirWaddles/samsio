@@ -1,5 +1,4 @@
-const Store = require('./Store');
-const Container = require('./Container');
+import Store from './Store';
+import Container from './Container';
 
-exports.Store = Store;
-exports.Container = Container;
+export { Store, Container };
