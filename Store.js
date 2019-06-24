@@ -1,6 +1,26 @@
 var gblListenID = 1;
 var gblProcessID = 1;
 
+/**
+ * Some functions for a deep merge setter. Going to be optional.
+ * This is also largely referential, stuff stays intact.
+ */
+function isObject(obj) {
+    return (obj && typeof obj === 'object' && !Array.isArray(obj));
+}
+
+function deepMerge(state, assign) {
+    if (!isObject(assign) || !isObject(state)) {
+        return assign;
+    }
+
+    for (let key in assign) {
+        state[key] = deepMerge(state[key], assign[key]);
+    }
+
+    return state;
+}
+
 class Store {
     constructor() {
         this.processors = [];
@@ -35,9 +55,19 @@ class Store {
         return Object.assign({}, this.state);
     }
 
+    processState() {
+        this.state = this.processors.reduce((acc, v) => v.process(acc), this.state);
+    }
+
     updateState(obj) {
         Object.assign(this.state, obj);
-        this.state = this.processors.reduce((acc, v) => v.process(acc), this.state);
+        this.processState();
+        this.flush();
+    }
+
+    deepUpdate(obj) {
+        this.state = deepMerge(this.state, obj);
+        this.processState();
         this.flush();
     }
 
