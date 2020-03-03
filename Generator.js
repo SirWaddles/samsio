@@ -5,7 +5,7 @@ function ActionGenerator(classType, before, after) {
             super(...args);
         }
     };
-    NewClass.prototype = Object.assign(NewClass.prototype, Object.getOwnPropertyNames(prototype).reduce((acc, v) => {
+    Object.assign(NewClass.prototype, Object.getOwnPropertyNames(prototype).reduce((acc, v) => {
         if (v == 'constructor') return acc;
         acc[v] = function(...args) {
             before.apply(this);
