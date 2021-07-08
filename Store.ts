@@ -21,28 +21,26 @@ function deepMerge(state: any, assign: any) {
     return state;
 }
 
-type ProcessFn = (state: StoreState) => void;
-type ListenerFn = (state: StoreState) => void;
+type ProcessFn<StoreState> = (state: StoreState) => any;
+type ListenerFn<StoreState> = (state: StoreState) => void;
 
-type Processor = {
-    process: ProcessFn;
+type Processor<StoreState> = {
+    process: ProcessFn<StoreState>;
     id: number;
 };
 
-type StoreState = any;
-
-class Store {
-    processors: Processor[];
+class Store<StoreState> {
+    processors: Processor<StoreState>[];
     state: StoreState;
-    listeners: Map<number, ListenerFn>;
+    listeners: Map<number, ListenerFn<StoreState>>;
 
-    constructor() {
+    constructor(initialState: StoreState) {
         this.processors = [];
         this.listeners = new Map();
-        this.state = {};
+        this.state = initialState;
     }
 
-    addProcessor(processor: ProcessFn) {
+    addProcessor(processor: ProcessFn<StoreState>) {
         gblProcessID++;
         this.processors.push({
             process: processor,
@@ -55,7 +53,7 @@ class Store {
         this.processors = this.processors.filter(v => v.id !== processId);
     }
 
-    addListener(listener: ListenerFn) {
+    addListener(listener: ListenerFn<StoreState>) {
         gblListenID++;
         this.listeners.set(gblListenID, listener);
         return gblListenID;
@@ -91,7 +89,5 @@ class Store {
         }
     }
 }
-
-export { StoreState };
 
 export default Store;

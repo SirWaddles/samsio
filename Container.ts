@@ -1,45 +1,45 @@
 import React from 'react';
-import Store, { StoreState } from './Store';
+import Store from './Store';
 
-interface ContainerStoreList {
-    [name: string]: Store;
+interface ContainerStoreList<SState> {
+    [name: string]: Store<SState>;
 }
-interface ContainerStateList {
-    [name: string]: StoreState;
+interface ContainerStateList<SState> {
+    [name: string]: SState;
 }
 
 type TransformFn = (state: any) => any;
 
-type ContainerProps = {
-    store: Store | Store[] | ContainerStoreList;
+type ContainerProps<SState> = {
+    store: Store<SState> | Store<SState>[] | ContainerStoreList<SState>;
     transform?: TransformFn;
 };
 
-type ListenerIdList = {
+type ListenerIdList<SState> = {
     listen: number;
-    store: Store;
+    store: Store<SState>;
 };
 
-type ListenerIdMap = {
+type ListenerIdMap<SState> = {
     listen: number;
-    store: Store;
+    store: Store<SState>;
     key: string;
 };
 
-type ListenerId = number | ListenerIdList[] | ListenerIdMap[];
+type ListenerId<SState> = number | ListenerIdList<SState>[] | ListenerIdMap<SState>[];
 
-class StoreContainer extends React.Component<ContainerProps, {}> {
-    listenid: ListenerId;
+class StoreContainer<SState> extends React.Component<ContainerProps<SState>, {}> {
+    listenid: ListenerId<SState>;
 
-    constructor(props: ContainerProps) {
+    constructor(props: ContainerProps<SState>) {
         super(props);
         if (Array.isArray(props.store)) {
             this.state = props.store.reduce((acc, v) => Object.assign(acc, v.getState()), {});
         } else if (props.store instanceof Store) {
             this.state = props.store.getState();
         } else {
-            const storeList = props.store as ContainerStoreList;
-            const finalState = {} as ContainerStateList;
+            const storeList = props.store as ContainerStoreList<SState>;
+            const finalState = {} as ContainerStateList<SState>;
             this.state = Object.keys(storeList).reduce((acc, v) => {
                 acc[v] = storeList[v].getState();
                 return acc;
@@ -71,7 +71,7 @@ class StoreContainer extends React.Component<ContainerProps, {}> {
         } else if (this.props.store instanceof Store) {
             this.listenid = this.props.store.addListener((state) => this.setState(state));
         } else {
-            const storeList = this.props.store as ContainerStoreList;
+            const storeList = this.props.store as ContainerStoreList<SState>;
             this.listenid = Object.keys(storeList).map(v => ({
                 listen: storeList[v].addListener(state => this.setState({[v]: state})),
                 store: storeList[v],
