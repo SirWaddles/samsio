@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
     mode: 'production',
-    entry: './index.js',
+    entry: './index.ts',
     output: {
         libraryTarget: 'umd',
         library: 'samsio',
@@ -11,17 +11,13 @@ module.exports = {
         react: 'react',
     },
     module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                    }
-                },
-            }
-        ]
-    }
+        rules: [{
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/,
+        }, ],
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
 };

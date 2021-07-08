@@ -5,11 +5,11 @@ var gblProcessID = 1;
  * Some functions for a deep merge setter. Going to be optional.
  * This is also largely referential, stuff stays intact.
  */
-function isObject(obj) {
+function isObject(obj: any): boolean {
     return (obj && typeof obj === 'object' && !Array.isArray(obj));
 }
 
-function deepMerge(state, assign) {
+function deepMerge(state: any, assign: any) {
     if (!isObject(assign) || !isObject(state)) {
         return assign;
     }
@@ -21,14 +21,28 @@ function deepMerge(state, assign) {
     return state;
 }
 
+type ProcessFn = (state: StoreState) => void;
+type ListenerFn = (state: StoreState) => void;
+
+type Processor = {
+    process: ProcessFn;
+    id: number;
+};
+
+type StoreState = any;
+
 class Store {
+    processors: Processor[];
+    state: StoreState;
+    listeners: Map<number, ListenerFn>;
+
     constructor() {
         this.processors = [];
-        this.listeners = {};
+        this.listeners = new Map();
         this.state = {};
     }
 
-    addProcessor(processor) {
+    addProcessor(processor: ProcessFn) {
         gblProcessID++;
         this.processors.push({
             process: processor,
@@ -37,18 +51,18 @@ class Store {
         return gblProcessID;
     }
 
-    removeProcessor(processId) {
+    removeProcessor(processId: number) {
         this.processors = this.processors.filter(v => v.id !== processId);
     }
 
-    addListener(listener) {
+    addListener(listener: ListenerFn) {
         gblListenID++;
-        this.listeners[gblListenID] = listener;
+        this.listeners.set(gblListenID, listener);
         return gblListenID;
     }
 
-    removeListener(listenId) {
-        delete this.listeners[listenId];
+    removeListener(listenId: number) {
+        this.listeners.delete(listenId);
     }
 
     getState() {
@@ -59,23 +73,25 @@ class Store {
         this.state = this.processors.reduce((acc, v) => v.process(acc), this.state);
     }
 
-    updateState(obj) {
+    updateState(obj: any) {
         Object.assign(this.state, obj);
         this.processState();
         this.flush();
     }
 
-    deepUpdate(obj) {
+    deepUpdate(obj: any) {
         this.state = deepMerge(this.state, obj);
         this.processState();
         this.flush();
     }
 
     flush() {
-        for (var key in this.listeners) {
-            this.listeners[key](this.state);
+        for (let listen of this.listeners) {
+            listen[1](this.state);
         }
     }
 }
+
+export { StoreState };
 
 export default Store;
